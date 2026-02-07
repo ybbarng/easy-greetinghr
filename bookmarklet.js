@@ -30,17 +30,23 @@
 
   // URL에서 workspaceId, openingId 파싱
   // 예: /workspace/1234/opening/56789/kanban
-  const urlMatch = location.pathname.match(
-    /\/workspace\/(\d+)\/opening\/(\d+)/
-  );
-  if (!urlMatch) {
+  function parseUrlIds() {
+    const match = location.pathname.match(
+      /\/workspace\/(\d+)\/opening\/(\d+)/
+    );
+    if (!match) return null;
+    return { workspaceId: match[1], openingId: match[2] };
+  }
+
+  const initialIds = parseUrlIds();
+  if (!initialIds) {
     console.error(
       '[EasyGreetingHR] 칸반 보드 페이지가 아닙니다. URL에서 workspaceId/openingId를 찾을 수 없습니다.'
     );
     return;
   }
-  const workspaceId = urlMatch[1];
-  const openingId = urlMatch[2];
+  let workspaceId = initialIds.workspaceId;
+  let openingId = initialIds.openingId;
   console.log(
     `[EasyGreetingHR] workspaceId=${workspaceId}, openingId=${openingId}`
   );
@@ -159,6 +165,19 @@
 
   // 전체 평가 데이터 수집
   async function collectEvaluationData() {
+    // SPA 이동 시 URL이 바뀔 수 있으므로 매번 다시 파싱
+    const currentIds = parseUrlIds();
+    if (!currentIds) {
+      console.warn('[EasyGreetingHR] 칸반 보드 페이지가 아닙니다. 건너뜁니다.');
+      return evaluationMap;
+    }
+    if (currentIds.workspaceId !== workspaceId || currentIds.openingId !== openingId) {
+      console.log(
+        `[EasyGreetingHR] 오프닝 변경 감지: ${openingId} → ${currentIds.openingId}`
+      );
+      workspaceId = currentIds.workspaceId;
+      openingId = currentIds.openingId;
+    }
     console.log('[EasyGreetingHR] 평가 데이터 수집 시작...');
     const applicants = await fetchAllApplicants();
     console.log(`[EasyGreetingHR] 지원자 ${applicants.length}명 발견`);
