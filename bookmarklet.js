@@ -22,9 +22,9 @@
   }
 
   // URL에서 workspaceId, openingId 파싱
-  // 예: /workspaces/2204/openings/196715/...
+  // 예: /workspace/1234/opening/56789/kanban
   const urlMatch = location.pathname.match(
-    /\/workspaces\/(\d+)\/openings\/(\d+)/
+    /\/workspace\/(\d+)\/opening\/(\d+)/
   );
   if (!urlMatch) {
     console.error(
@@ -47,7 +47,11 @@
   // === 유틸리티 ===
   async function apiFetch(url) {
     const res = await nativeFetch(url, {
-      headers: { Authorization: token },
+      headers: {
+        Authorization: token,
+        'X-Greeting-Workspace-Id': workspaceId,
+        'X-Greeting-Opening-Id': openingId,
+      },
     });
     if (!res.ok) throw new Error(`API 오류: ${res.status} ${url}`);
     return res.json();
