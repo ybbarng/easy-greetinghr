@@ -24,7 +24,7 @@
 
   const token = localStorage.getItem('access_token');
   if (!token) {
-    console.error('[EasyGreeting] access_token을 찾을 수 없습니다.');
+    console.error('[EasyGreetingHR] access_token을 찾을 수 없습니다.');
     return;
   }
 
@@ -35,14 +35,14 @@
   );
   if (!urlMatch) {
     console.error(
-      '[EasyGreeting] 칸반 보드 페이지가 아닙니다. URL에서 workspaceId/openingId를 찾을 수 없습니다.'
+      '[EasyGreetingHR] 칸반 보드 페이지가 아닙니다. URL에서 workspaceId/openingId를 찾을 수 없습니다.'
     );
     return;
   }
   const workspaceId = urlMatch[1];
   const openingId = urlMatch[2];
   console.log(
-    `[EasyGreeting] workspaceId=${workspaceId}, openingId=${openingId}`
+    `[EasyGreetingHR] workspaceId=${workspaceId}, openingId=${openingId}`
   );
 
   // === 상태 ===
@@ -159,9 +159,9 @@
 
   // 전체 평가 데이터 수집
   async function collectEvaluationData() {
-    console.log('[EasyGreeting] 평가 데이터 수집 시작...');
+    console.log('[EasyGreetingHR] 평가 데이터 수집 시작...');
     const applicants = await fetchAllApplicants();
-    console.log(`[EasyGreeting] 지원자 ${applicants.length}명 발견`);
+    console.log(`[EasyGreetingHR] 지원자 ${applicants.length}명 발견`);
 
     const evalResults = await concurrentMap(
       applicants,
@@ -184,7 +184,7 @@
 
     const evaluatedCount = evalResults.filter((r) => r.evaluated).length;
     console.log(
-      `[EasyGreeting] 평가 데이터 수집 완료: ${evaluatedCount}/${evalResults.length}명 평가 완료`
+      `[EasyGreetingHR] 평가 데이터 수집 완료: ${evaluatedCount}/${evalResults.length}명 평가 완료`
     );
 
     return evaluationMap;
@@ -332,11 +332,11 @@
         if (isUpdating) return;
         isUpdating = true;
         try {
-          console.log('[EasyGreeting] 칸반 변경 감지, 데이터 갱신...');
+          console.log('[EasyGreetingHR] 칸반 변경 감지, 데이터 갱신...');
           await collectEvaluationData();
           applyBadges();
         } catch (e) {
-          console.error('[EasyGreeting] 업데이트 실패:', e);
+          console.error('[EasyGreetingHR] 업데이트 실패:', e);
         } finally {
           isUpdating = false;
         }
@@ -360,7 +360,7 @@
       return originalXhrOpen.call(this, method, url, ...rest);
     };
 
-    console.log('[EasyGreeting] 네트워크 인터셉터 설치 완료');
+    console.log('[EasyGreetingHR] 네트워크 인터셉터 설치 완료');
   }
 
   // === 초기 실행 ===
@@ -369,8 +369,8 @@
     applyBadges();
     addFilterToggle();
     installNetworkInterceptor();
-    console.log('[EasyGreeting] 초기화 완료!');
+    console.log('[EasyGreetingHR] 초기화 완료!');
   } catch (e) {
-    console.error('[EasyGreeting] 초기화 실패:', e);
+    console.error('[EasyGreetingHR] 초기화 실패:', e);
   }
 })();
