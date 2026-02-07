@@ -210,7 +210,7 @@
     badge.className = `${BADGE_CLASS} greet-chip`;
     badge.dataset.variant = token;
     badge.dataset.size = 'sm';
-    badge.textContent = `✓ ${scoreLabel}`;
+    badge.textContent = `내 평가: ${scoreLabel}`;
     badge.style.cssText = 'margin-left: auto; flex-shrink: 0';
 
     headerRow.appendChild(badge);
