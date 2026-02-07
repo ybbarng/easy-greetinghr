@@ -194,26 +194,36 @@
 
   function removeBadges() {
     document.querySelectorAll(`.${BADGE_CLASS}`).forEach((el) => el.remove());
+    // 카드 흐림 효과 제거
+    document
+      .querySelectorAll('[class*="item__Container"]')
+      .forEach((card) => (card.style.opacity = ''));
   }
 
   function addBadgeToCard(nameElement, scoreLabel, score) {
-    // 이름이 속한 헤더 행(flex row)을 찾아서 배지를 오른쪽 끝에 배치
-    const headerRow = nameElement.closest('[class*="header__Container"]');
-    if (!headerRow) return;
+    const card = nameElement.closest('[class*="item__Container"]');
+    if (!card) return;
+    const wrapper = card.parentElement;
 
     // 기존 배지가 있으면 제거
-    const existing = headerRow.querySelector(`.${BADGE_CLASS}`);
+    const existing = wrapper.querySelector(`.${BADGE_CLASS}`);
     if (existing) existing.remove();
 
+    // 카드 흐리게
+    card.style.opacity = '0.4';
+
+    // 배지를 카드 바깥(래퍼)에 배치하여 opacity 영향 없이 선명하게 유지
+    wrapper.style.position = 'relative';
     const token = SCORE_CHIP_TOKENS[score] || 'gray';
     const badge = document.createElement('span');
     badge.className = `${BADGE_CLASS} greet-chip`;
     badge.dataset.variant = token;
     badge.dataset.size = 'sm';
     badge.textContent = `내 평가: ${scoreLabel}`;
-    badge.style.cssText = 'margin-left: auto; flex-shrink: 0';
+    badge.style.cssText =
+      'position: absolute; top: 8px; right: 12px; z-index: 1';
 
-    headerRow.appendChild(badge);
+    wrapper.appendChild(badge);
   }
 
   function applyBadges() {
