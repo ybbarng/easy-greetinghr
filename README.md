@@ -31,13 +31,15 @@
 1. 그리팅HR 칸반 보드 페이지에 접속한다
 2. 북마크바에 추가한 **EasyGreetingHR**을 클릭한다
 
-<details>
-<summary>콘솔에서 직접 실행하기</summary>
+## 고급
+
+### 콘솔에서 직접 실행하기
+
+북마크 없이 브라우저 개발자 도구에서 직접 실행할 수도 있습니다.
 
 1. 그리팅HR 칸반 보드 페이지를 연다
 2. 브라우저 개발자 도구를 연다 (`F12` 또는 `Cmd+Option+I`)
 3. Console 탭에서 [`bookmarklet.js`](bookmarklet.js)의 내용을 붙여넣고 실행한다
-</details>
 
 ## 문서
 
