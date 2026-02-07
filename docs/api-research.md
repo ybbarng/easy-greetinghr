@@ -193,3 +193,4 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
 - `isOwn` 필드로 내 평가 여부를 판별
 - `currentProcess` 필드로 현재 단계의 평가만 확인 가능
 - API 호출 수: 지원자 수만큼 (N명이면 N회 추가 호출)
+- 그리팅HR 앱은 `window.fetch`가 아닌 `XMLHttpRequest`로 API를 호출하므로, 네트워크 감지 시 XHR 인터셉트가 필요
