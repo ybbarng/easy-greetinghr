@@ -190,28 +190,30 @@
   }
 
   function addBadgeToCard(nameElement, scoreLabel) {
+    // 이름이 속한 헤더 행(flex row)을 찾아서 배지를 오른쪽 끝에 배치
+    const headerRow = nameElement.closest('[class*="header__Container"]');
+    if (!headerRow) return;
+
     // 기존 배지가 있으면 제거
-    const existing =
-      nameElement.parentElement.querySelector(`.${BADGE_CLASS}`);
+    const existing = headerRow.querySelector(`.${BADGE_CLASS}`);
     if (existing) existing.remove();
 
     const badge = document.createElement('span');
     badge.className = BADGE_CLASS;
     badge.textContent = `✓ ${scoreLabel}`;
     badge.style.cssText = [
-      'display: inline-block',
-      'margin-left: 6px',
+      'margin-left: auto',
       'padding: 1px 6px',
       'border-radius: 4px',
       'font-size: 11px',
       'font-weight: 600',
       'color: #fff',
       'background-color: #22c55e',
-      'vertical-align: middle',
       'white-space: nowrap',
+      'flex-shrink: 0',
     ].join(';');
 
-    nameElement.parentElement.appendChild(badge);
+    headerRow.appendChild(badge);
   }
 
   function applyBadges() {
