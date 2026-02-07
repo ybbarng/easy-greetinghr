@@ -11,27 +11,33 @@
 - 평가 완료 카드 숨기기/보이기 필터 토글 버튼
 - 칸반 보드 갱신 시 자동으로 평가 상태 업데이트
 
-## 사용법
-
-### 방법 1: 북마클릿 (권장)
-
-한 번 등록해두면 북마크 클릭만으로 실행할 수 있습니다.
+## 북마크 등록
 
 1. 아래 코드를 복사한다:
    ```
    javascript:void(fetch('https://raw.githubusercontent.com/ybbarng/easy-greetinghr/main/bookmarklet.js').then(r=>r.text()).then(t=>eval(t)))
    ```
-2. 브라우저 북마크바에서 우클릭 → **페이지 추가** (또는 북마크 추가)
-3. 이름은 자유롭게, URL 란에 위 코드를 붙여넣고 저장
-4. 그리팅HR 칸반 보드 페이지에서 해당 북마크를 클릭
+2. 브라우저 북마크바에서 우클릭 → **페이지 추가**
+3. **이름**에 `EasyGreetingHR`을 입력한다
+4. **URL**에 위에서 복사한 코드를 붙여넣고 **저장**한다
 
-### 방법 2: 콘솔에서 직접 실행
+<img src="docs/bookmark-setup.png" alt="북마크 등록 예시" width="400">
+
+## 사용 방법
+
+1. 그리팅HR 칸반 보드 페이지에 접속한다
+2. 북마크바에 추가한 **EasyGreetingHR**을 클릭한다
+
+> [!IMPORTANT]
+> 페이지를 새로고침하면 스크립트가 초기화되므로 다시 클릭해야 합니다.
+
+<details>
+<summary>콘솔에서 직접 실행하기</summary>
 
 1. 그리팅HR 칸반 보드 페이지를 연다
 2. 브라우저 개발자 도구를 연다 (`F12` 또는 `Cmd+Option+I`)
 3. Console 탭에서 [`bookmarklet.js`](bookmarklet.js)의 내용을 붙여넣고 실행한다
-
-> 페이지를 새로고침하면 스크립트가 초기화되므로 다시 실행해야 합니다.
+</details>
 
 ## 문서
 
