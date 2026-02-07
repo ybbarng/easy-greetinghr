@@ -2,7 +2,7 @@
 
 그리팅HR 칸반 보드에서 내 평가 상태를 한눈에 확인할 수 있는 브라우저 스크립트
 
-![스크린샷](docs/screenshot.png)
+<img src="docs/screenshot.png" alt="스크린샷" width="300">
 
 ## 기능
 
