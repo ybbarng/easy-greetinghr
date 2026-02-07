@@ -165,14 +165,91 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
   ```
 - **참고**: processId=100001은 Applied 단계이며 N명의 지원자 ID가 반환됨. kanban API(#2)가 페이지네이션된 카드 상세를, 이 API는 전체 ID 목록을 제공하는 구조로 보임
 
-### 4. (조사 필요) 카드 상세 / 평가 정보
+### 4. 지원자 상세 정보
 
-- TODO: 카드 클릭 시 호출되는 API 확인 필요
-- TODO: 평가 데이터가 포함된 응답 구조 확인 필요
+- **Endpoint**: `GET /workspaces/{workspaceId}/openings/{openingId}/applicants/{applicantId}`
+- **API 버전**: v4.0
+- **예시**: `GET /workspaces/1234/openings/56789/applicants/1000001`
+- **설명**: 지원자 카드 상세 정보. 칸반 카드(#2)와 동일한 데이터 구조
+- **참고**: 개별 평가자 정보는 포함되지 않음 (집계 evaluationInfo만 있음)
+
+### 5. 평가 상세 (개별 평가자별) ⭐ 핵심 API
+
+- **Endpoint**: `GET /evaluations/contents?applicantId={applicantId}`
+- **Base URL**: `https://api.greetinghr.com/app/ats/evaluations/contents` (버전 prefix 없음)
+- **예시**: `GET /evaluations/contents?applicantId=1000001`
+- **설명**: 지원자에 대한 모든 단계별 개별 평가 데이터를 반환
+- **응답 구조**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "processEvaluations": [
+        {
+          "currentProcess": true,       // 현재 단계 여부
+          "id": 100001,
+          "name": "Applied",
+          "icon": "🗒️",
+          "evaluation": {
+            "id": 2000001,
+            "evaluationModuleId": 50001,
+            "score": 25,                // 전체 합산 점수
+            "totalScoreType": "STEP5",
+            "evaluationContents": [     // ⭐ 개별 평가자 배열
+              {
+                "id": 3000001,
+                "evaluatorSummary": {
+                  "id": 10001,          // 평가자 ID
+                  "name": "김철수",
+                  "imageUrl": null,
+                  "department": "FE"
+                },
+                "privateEvaluation": false,
+                "score": 25,            // 이 평가자의 개별 점수
+                "scoreText": "",
+                "comment": "(평가 코멘트 내용)",  // 평가 코멘트
+                "isOwn": true,          // ⭐⭐ 내 평가 여부!
+                "isVisible": true,
+                "createdAt": "2025-01-16T10:00:00Z",
+                "updatedAt": "2025-01-16T10:05:00Z"
+              }
+            ]
+          }
+        },
+        {
+          "currentProcess": false,
+          "id": 100002,
+          "name": "Document Review",
+          "evaluation": null            // 아직 이 단계에서 평가 없음
+        }
+      ],
+      "archivedEvaluations": [],
+      "deletedProcessEvaluations": []
+    }
+  }
+  ```
+- **핵심 필드**:
+  - `evaluationContents[].isOwn`: **내 평가인지 여부** (`true`/`false`)
+  - `evaluationContents[].score`: **나의 개별 점수**
+  - `evaluationContents[].evaluatorSummary.id`: 평가자 고유 ID
+  - `evaluationContents[].comment`: 평가 코멘트
+- **현재 로그인 사용자**: 김철수 (id: 10001) — `isOwn: true`인 항목으로 확인
+
+## 기술 검토 결론
+
+### 데이터 가용성
+- ✅ 칸반 보드 API에는 집계 평가 데이터만 포함 (scoreCount, 합산 score)
+- ✅ 개별 평가 데이터는 `evaluations/contents` API를 지원자별로 호출해야 확인 가능
+- ✅ `isOwn` 필드로 내 평가 여부를 판별할 수 있음
+
+### 구현 전략
+- 칸반 보드에 표시된 각 지원자에 대해 `evaluations/contents` API를 호출하여
+  `isOwn: true`인 항목 존재 여부 및 점수를 수집해야 함
+- API 호출 수: 지원자 수만큼 (예: N명이면 N회 추가 호출)
 
 ## 기술 조사 진행 방법
 
-1. ~~칸반 보드 페이지에서 브라우저 개발자 도구(Network 탭)를 열고 API 호출 패턴 확인~~ ✅ 진행 중
-2. 카드 클릭 시 추가로 호출되는 API 확인
-3. 응답 데이터에 평가 정보가 포함되어 있는지 확인
-4. 위 정보를 바탕으로 구현 전략 결정
+1. ~~칸반 보드 페이지에서 브라우저 개발자 도구(Network 탭)를 열고 API 호출 패턴 확인~~ ✅
+2. ~~카드 클릭 시 추가로 호출되는 API 확인~~ ✅
+3. ~~응답 데이터에 평가 정보가 포함되어 있는지 확인~~ ✅
+4. 위 정보를 바탕으로 구현 전략 결정 — 진행 중
