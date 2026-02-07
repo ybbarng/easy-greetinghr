@@ -268,10 +268,12 @@
       }
 
       if (isEvaluated) {
-        // 카드 컨테이너를 찾아서 숨기기/보이기
         const card = nameEl.closest('[class*="item__Container"]');
         if (card) {
           card.style.display = hide ? 'none' : '';
+          // 배지도 함께 숨기기/보이기 (배지는 카드 바깥 래퍼에 위치)
+          const badge = card.parentElement.querySelector(`.${BADGE_CLASS}`);
+          if (badge) badge.style.display = hide ? 'none' : '';
         }
       }
     }
