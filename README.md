@@ -229,11 +229,25 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
   }
   ```
 - **핵심 필드**:
+  - `processEvaluations[].currentProcess`: 지원자의 현재 단계 여부
+  - `processEvaluations[].evaluation.evaluationContents[]`: 개별 평가자 배열
   - `evaluationContents[].isOwn`: **내 평가인지 여부** (`true`/`false`)
   - `evaluationContents[].score`: **나의 개별 점수**
   - `evaluationContents[].evaluatorSummary.id`: 평가자 고유 ID
   - `evaluationContents[].comment`: 평가 코멘트
 - **현재 로그인 사용자**: 김철수 (id: 10001) — `isOwn: true`인 항목으로 확인
+- **점수 체계**: STEP5 = 5단계 (0, 25, 50, 75, 100)
+- **단계별 평가 상태 패턴**:
+  | 상태 | evaluation | evaluationContents |
+  |------|-----------|-------------------|
+  | 해당 단계 평가 진행 중 | `{ id, score, evaluationContents: [...] }` | 평가한 사람들의 배열 |
+  | 해당 단계 평가 없음 (아직 아무도 안 함) | `{ id, score: null, evaluationContents: [] }` | 빈 배열 |
+  | 해당 단계 도달 전 | `null` | - |
+- **내 평가 여부 판별 로직**:
+  1. `currentProcess: true`인 단계를 찾는다
+  2. 해당 단계의 `evaluation.evaluationContents`에서 `isOwn: true`인 항목을 찾는다
+  3. 있으면 → 내가 평가함 (해당 `score`가 나의 점수)
+  4. 없으면 → 내가 아직 평가하지 않음
 
 ## 기술 검토 결론
 
@@ -241,10 +255,11 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
 - ✅ 칸반 보드 API에는 집계 평가 데이터만 포함 (scoreCount, 합산 score)
 - ✅ 개별 평가 데이터는 `evaluations/contents` API를 지원자별로 호출해야 확인 가능
 - ✅ `isOwn` 필드로 내 평가 여부를 판별할 수 있음
+- ✅ `currentProcess` 필드로 현재 단계의 평가만 확인 가능
 
 ### 구현 전략
 - 칸반 보드에 표시된 각 지원자에 대해 `evaluations/contents` API를 호출하여
-  `isOwn: true`인 항목 존재 여부 및 점수를 수집해야 함
+  현재 단계(`currentProcess: true`)의 `isOwn: true` 항목 존재 여부 및 점수를 수집
 - API 호출 수: 지원자 수만큼 (예: N명이면 N회 추가 호출)
 
 ## 기술 조사 진행 방법
