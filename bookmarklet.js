@@ -10,6 +10,13 @@
     75: '적합',
     100: '매우 적합',
   };
+  const SCORE_CHIP_TOKENS = {
+    0: 'danger',
+    25: 'danger',
+    50: 'gray',
+    75: 'success',
+    100: 'success',
+  };
   const CONCURRENCY_LIMIT = 5;
   const DEBOUNCE_MS = 1000;
   const BADGE_CLASS = 'eg-eval-badge';
@@ -189,7 +196,7 @@
     document.querySelectorAll(`.${BADGE_CLASS}`).forEach((el) => el.remove());
   }
 
-  function addBadgeToCard(nameElement, scoreLabel) {
+  function addBadgeToCard(nameElement, scoreLabel, score) {
     // 이름이 속한 헤더 행(flex row)을 찾아서 배지를 오른쪽 끝에 배치
     const headerRow = nameElement.closest('[class*="header__Container"]');
     if (!headerRow) return;
@@ -198,20 +205,13 @@
     const existing = headerRow.querySelector(`.${BADGE_CLASS}`);
     if (existing) existing.remove();
 
+    const token = SCORE_CHIP_TOKENS[score] || 'gray';
     const badge = document.createElement('span');
-    badge.className = BADGE_CLASS;
+    badge.className = `${BADGE_CLASS} greet-chip`;
+    badge.dataset.variant = token;
+    badge.dataset.size = 'sm';
     badge.textContent = `✓ ${scoreLabel}`;
-    badge.style.cssText = [
-      'margin-left: auto',
-      'padding: 1px 6px',
-      'border-radius: 4px',
-      'font-size: 11px',
-      'font-weight: 600',
-      'color: #fff',
-      'background-color: #22c55e',
-      'white-space: nowrap',
-      'flex-shrink: 0',
-    ].join(';');
+    badge.style.cssText = 'margin-left: auto; flex-shrink: 0';
 
     headerRow.appendChild(badge);
   }
@@ -229,7 +229,7 @@
       // evaluationMap에서 이름으로 매칭
       for (const [, evalData] of evaluationMap) {
         if (evalData.name === name && evalData.evaluated) {
-          addBadgeToCard(nameEl, evalData.scoreLabel);
+          addBadgeToCard(nameEl, evalData.scoreLabel, evalData.score);
           break;
         }
       }
