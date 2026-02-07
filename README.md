@@ -91,7 +91,61 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
     }
   }
   ```
-- **참고**: 이 예시(processId=100002, Document Review 단계)는 지원자가 0명이라 datas가 빈 배열. 지원자가 있는 단계의 응답에서 카드 데이터 구조 확인 필요
+- **참고**: 이 예시(processId=100002, Document Review 단계)는 지원자가 0명이라 datas가 빈 배열
+- **카드 데이터 구조** (지원자가 있는 단계에서 확인):
+  ```json
+  {
+    "applicantInfo": {
+      "id": 1000001,              // 지원자 ID
+      "name": "홍길동",
+      "email": "...",
+      "phone": "...",
+      "submitDate": "2025-01-15T09:00:00Z",
+      "refererName": "example.co.kr",  // 지원 경로
+      "isLock": false,
+      "status": "SUBMIT",
+      "quickNote": null,
+      "rejectDetail": null,
+      "passDate": null,
+      "expireDate": "2027-01-15T09:00:00Z"
+    },
+    "tagInfos": [],
+    "processInfo": {
+      "id": 100001,
+      "name": "Applied",
+      "icon": "🗒️"
+    },
+    "avgScoreInfo": null,
+    "evaluationInfo": {
+      "evaluationId": 2000001,    // 평가 ID
+      "score": 25,                 // 전체 합산 점수
+      "scoreText": null,
+      "scoreCount": 3,             // 현재까지 평가한 사람 수
+      "totalScoreCount": 6,        // 전체 평가자 수
+      "totalScoreType": "STEP5",   // 5단계 평가
+      "totalScoreShowType": "SCORE",
+      "evaluationStatus": "EVALUATING",
+      "isAvgScoreVisible": true
+    },
+    "duplicatedInfo": { "duplicatedPhone": false, "duplicatedEmail": false },
+    "openingAbstractInfo": {
+      "openingId": 56789,
+      "title": "[OO팀] 소프트웨어 엔지니어",
+      "status": "OPEN"
+    },
+    "recruitmentPlatform": "EXAMPLE",  // EXAMPLE, NONE 등
+    "isRejected": false,
+    "isPassed": false,
+    "isVisible": true
+    // 기타: lastMeetingInfo, shifteeInfo, viewinterInfo, orpInfo 등 (대부분 null)
+  }
+  ```
+- **evaluationInfo 분석**:
+  - `score`: 전체 평가자의 합산 점수 (개별 점수 아님)
+  - `scoreCount` / `totalScoreCount`: 평가 완료 인원 / 전체 평가자 수 (예: 3/6)
+  - `totalScoreType: "STEP5"`: 5단계 평가 (5단계 평가)
+  - ⚠️ **"내가" 평가했는지 여부와 "나의" 개별 점수는 포함되어 있지 않음**
+  - → 카드 상세보기 API에서 개별 평가 데이터를 확인해야 함
 
 ### 3. 칸반 카드 ID 목록 (단계별)
 
