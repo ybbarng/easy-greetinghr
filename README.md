@@ -13,11 +13,25 @@
 
 ## 사용법
 
+### 방법 1: 북마클릿 (권장)
+
+한 번 등록해두면 북마크 클릭만으로 실행할 수 있습니다.
+
+1. 아래 코드를 복사한다:
+   ```
+   javascript:void(fetch('https://raw.githubusercontent.com/ybbarng/easy-greetinghr/main/bookmarklet.js').then(r=>r.text()).then(t=>eval(t)))
+   ```
+2. 브라우저 북마크바에서 우클릭 → **페이지 추가** (또는 북마크 추가)
+3. 이름은 자유롭게, URL 란에 위 코드를 붙여넣고 저장
+4. 그리팅HR 칸반 보드 페이지에서 해당 북마크를 클릭
+
+### 방법 2: 콘솔에서 직접 실행
+
 1. 그리팅HR 칸반 보드 페이지를 연다
 2. 브라우저 개발자 도구를 연다 (`F12` 또는 `Cmd+Option+I`)
 3. Console 탭에서 [`bookmarklet.js`](bookmarklet.js)의 내용을 붙여넣고 실행한다
 
-> 페이지를 새로고침하면 스크립트가 초기화되므로 다시 붙여넣어야 합니다.
+> 페이지를 새로고침하면 스크립트가 초기화되므로 다시 실행해야 합니다.
 
 ## 문서
 
