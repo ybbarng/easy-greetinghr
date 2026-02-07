@@ -286,40 +286,33 @@
 
     const btn = document.createElement('button');
     btn.id = FILTER_BTN_ID;
+    btn.className = 'greet-button';
+    btn.type = 'button';
+    btn.dataset.size = 'sm';
+    btn.dataset.variant = 'mute';
     btn.textContent = '평가 완료 숨기기';
-    btn.style.cssText = [
-      'position: fixed',
-      'top: 10px',
-      'right: 10px',
-      'z-index: 10000',
-      'padding: 8px 16px',
-      'border: none',
-      'border-radius: 6px',
-      'font-size: 13px',
-      'font-weight: 600',
-      'cursor: pointer',
-      'background-color: #f1f5f9',
-      'color: #334155',
-      'box-shadow: 0 1px 3px rgba(0,0,0,0.12)',
-      'transition: background-color 0.2s',
-    ].join(';');
 
     btn.addEventListener('click', () => {
       filterEnabled = !filterEnabled;
       if (filterEnabled) {
         btn.textContent = '평가 완료 보이기';
-        btn.style.backgroundColor = '#22c55e';
-        btn.style.color = '#fff';
-        applyFilter(true);
+        btn.dataset.variant = 'primary';
       } else {
         btn.textContent = '평가 완료 숨기기';
-        btn.style.backgroundColor = '#f1f5f9';
-        btn.style.color = '#334155';
-        applyFilter(false);
+        btn.dataset.variant = 'mute';
       }
+      applyFilter(filterEnabled);
     });
 
-    document.body.appendChild(btn);
+    // 필터 툴바의 첫 번째 항목으로 삽입
+    const toolbar = document.querySelector(
+      '[class*="applicants-filters-tool"]'
+    );
+    if (toolbar && toolbar.parentElement) {
+      toolbar.parentElement.insertBefore(btn, toolbar);
+    } else {
+      document.body.appendChild(btn);
+    }
   }
 
   // === 네트워크 인터셉트 (실시간 업데이트) ===
