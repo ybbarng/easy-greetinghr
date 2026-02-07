@@ -322,38 +322,45 @@
     document.body.appendChild(btn);
   }
 
-  // === fetch 인터셉트 (실시간 업데이트) ===
-  function installFetchInterceptor() {
-    const originalFetch = window.fetch;
+  // === 네트워크 인터셉트 (실시간 업데이트) ===
+  function installNetworkInterceptor() {
     let debounceTimer = null;
 
+    function onKanbanDetected() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        if (isUpdating) return;
+        isUpdating = true;
+        try {
+          console.log('[EasyGreeting] 칸반 변경 감지, 데이터 갱신...');
+          await collectEvaluationData();
+          applyBadges();
+        } catch (e) {
+          console.error('[EasyGreeting] 업데이트 실패:', e);
+        } finally {
+          isUpdating = false;
+        }
+      }, DEBOUNCE_MS);
+    }
+
+    // fetch 인터셉트
+    const originalFetch = window.fetch;
     window.fetch = function (...args) {
-      const result = originalFetch.apply(this, args);
-
-      // URL 확인: kanban API 호출 감지 (kanban-id는 무시)
       const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
-      if (url.includes('/kanban?')) {
-        // debounce: 마지막 kanban 호출 후 1초 뒤에 업데이트
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(async () => {
-          if (isUpdating) return;
-          isUpdating = true;
-          try {
-            console.log('[EasyGreeting] 칸반 변경 감지, 데이터 갱신...');
-            await collectEvaluationData();
-            applyBadges();
-          } catch (e) {
-            console.error('[EasyGreeting] 업데이트 실패:', e);
-          } finally {
-            isUpdating = false;
-          }
-        }, DEBOUNCE_MS);
-      }
-
-      return result;
+      if (url.includes('/kanban?')) onKanbanDetected();
+      return originalFetch.apply(this, args);
     };
 
-    console.log('[EasyGreeting] fetch 인터셉터 설치 완료');
+    // XMLHttpRequest 인터셉트
+    const originalXhrOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+      if (typeof url === 'string' && url.includes('/kanban?')) {
+        this.addEventListener('load', onKanbanDetected, { once: true });
+      }
+      return originalXhrOpen.call(this, method, url, ...rest);
+    };
+
+    console.log('[EasyGreeting] 네트워크 인터셉터 설치 완료');
   }
 
   // === 초기 실행 ===
@@ -361,7 +368,7 @@
     await collectEvaluationData();
     applyBadges();
     addFilterToggle();
-    installFetchInterceptor();
+    installNetworkInterceptor();
     console.log('[EasyGreeting] 초기화 완료!');
   } catch (e) {
     console.error('[EasyGreeting] 초기화 실패:', e);
