@@ -49,7 +49,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
     "data": {
       "datas": [
         {
-          "id": 100001,        // 단계 ID
+          "id": 100001,          // 단계 ID
           "name": "Applied",    // 단계 이름
           "procedure": 0,       // 단계 순서 (0부터 시작)
           "icon": "🗒️"         // 단계 아이콘
@@ -89,7 +89,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
     }
   }
   ```
-- **참고**: 이 예시(processId=100002, Document Review 단계)는 지원자가 0명이라 datas가 빈 배열
+- **참고**: 이 예시(Document Review 단계)는 지원자가 0명이라 datas가 빈 배열
 - **카드 데이터 구조** (지원자가 있는 단계에서 확인):
   ```json
   {
@@ -131,7 +131,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
       "title": "[OO팀] 소프트웨어 엔지니어",
       "status": "OPEN"
     },
-    "recruitmentPlatform": "EXAMPLE",  // EXAMPLE, NONE 등
+    "recruitmentPlatform": "EXAMPLE",
     "isRejected": false,
     "isPassed": false,
     "isVisible": true
@@ -141,7 +141,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
 - **evaluationInfo 분석**:
   - `score`: 전체 평가자의 합산 점수 (개별 점수 아님)
   - `scoreCount` / `totalScoreCount`: 평가 완료 인원 / 전체 평가자 수 (예: 3/6)
-  - `totalScoreType: "STEP5"`: 5단계 평가 (5단계 평가)
+  - `totalScoreType: "STEP5"`: 5단계 평가
   - ⚠️ **"내가" 평가했는지 여부와 "나의" 개별 점수는 포함되어 있지 않음**
   - → 카드 상세보기 API에서 개별 평가 데이터를 확인해야 함
 
@@ -161,7 +161,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
     }
   }
   ```
-- **참고**: processId=100001은 Applied 단계이며 N명의 지원자 ID가 반환됨. kanban API(#2)가 페이지네이션된 카드 상세를, 이 API는 전체 ID 목록을 제공하는 구조로 보임
+- **참고**: kanban API가 페이지네이션된 카드 상세를, 이 API는 전체 ID 목록을 제공하는 구조
 
 ### 4. 지원자 상세 정보
 
@@ -200,12 +200,12 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
                   "id": 10001,          // 평가자 ID
                   "name": "김철수",
                   "imageUrl": null,
-                  "department": "FE"
+                  "department": "Dev"
                 },
                 "privateEvaluation": false,
                 "score": 25,            // 이 평가자의 개별 점수
                 "scoreText": "",
-                "comment": "(평가 코멘트 내용)",  // 평가 코멘트
+                "comment": "(평가 코멘트 내용)",
                 "isOwn": true,          // ⭐⭐ 내 평가 여부!
                 "isVisible": true,
                 "createdAt": "2025-01-16T10:00:00Z",
@@ -233,7 +233,7 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
   - `evaluationContents[].score`: **나의 개별 점수**
   - `evaluationContents[].evaluatorSummary.id`: 평가자 고유 ID
   - `evaluationContents[].comment`: 평가 코멘트
-- **현재 로그인 사용자**: 김철수 (id: 10001) — `isOwn: true`인 항목으로 확인
+- **`isOwn: true`인 항목으로 현재 로그인 사용자의 평가를 식별**
 - **점수 체계**: STEP5 = 5단계 (0, 25, 50, 75, 100)
 - **단계별 평가 상태 패턴**:
   | 상태 | evaluation | evaluationContents |
