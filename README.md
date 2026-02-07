@@ -93,7 +93,25 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
   ```
 - **참고**: 이 예시(processId=100002, Document Review 단계)는 지원자가 0명이라 datas가 빈 배열. 지원자가 있는 단계의 응답에서 카드 데이터 구조 확인 필요
 
-### 3. (조사 필요) 카드 상세 / 평가 정보
+### 3. 칸반 카드 ID 목록 (단계별)
+
+- **Endpoint**: `GET /workspaces/{workspaceId}/openings/{openingId}/kanban-id`
+- **API 버전**: v5.0
+- **예시**: `GET /workspaces/1234/openings/56789/kanban-id?processId=100001&sorts=SUBMIT_DATE_DESC,ID_ASC&status=SUBMIT`
+- **설명**: 특정 단계의 전체 지원자 ID 목록을 한 번에 반환 (페이지네이션 없음)
+- **쿼리 파라미터**: kanban API와 동일하나 `page`, `pageSize` 없음
+- **응답 구조**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "ids": [1000001, 1000002, ...]  // 지원자(카드) ID 배열
+    }
+  }
+  ```
+- **참고**: processId=100001은 Applied 단계이며 N명의 지원자 ID가 반환됨. kanban API(#2)가 페이지네이션된 카드 상세를, 이 API는 전체 ID 목록을 제공하는 구조로 보임
+
+### 4. (조사 필요) 카드 상세 / 평가 정보
 
 - TODO: 카드 클릭 시 호출되는 API 확인 필요
 - TODO: 평가 데이터가 포함된 응답 구조 확인 필요
