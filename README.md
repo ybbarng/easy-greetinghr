@@ -62,9 +62,36 @@ Base URL: `https://api.greetinghr.com/app/ats/v3.0`
   ```
 - **확인된 단계**: Applied(0) → Document Review(1) → Assignment(2) → 1st Interview(3) → 2nd Interview(4) → Offer(5)
 
-### 2. (조사 필요) 칸반 카드 목록
+### 2. 칸반 카드 목록 (단계별)
 
-- TODO: 각 단계의 지원자 카드를 가져오는 API 확인 필요
+- **Endpoint**: `GET /workspaces/{workspaceId}/openings/{openingId}/kanban`
+- **API 버전**: v5.0 (단계 목록 API와 다름에 주의)
+- **예시**: `GET /workspaces/1234/openings/56789/kanban?page=0&pageSize=25&processId=100002&sorts=SUBMIT_DATE_DESC,ID_ASC&status=SUBMIT`
+- **설명**: 특정 단계(processId)의 지원자 카드 목록을 페이지네이션으로 반환
+- **쿼리 파라미터**:
+  | 파라미터 | 설명 | 예시 |
+  |---------|------|------|
+  | `page` | 페이지 번호 (0부터 시작) | `0` |
+  | `pageSize` | 페이지당 항목 수 | `25` |
+  | `processId` | 칸반 단계 ID (processes API에서 조회) | `100002` |
+  | `sorts` | 정렬 기준 | `SUBMIT_DATE_DESC,ID_ASC` |
+  | `status` | 지원 상태 | `SUBMIT` |
+- **응답 구조**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "page": 0,
+      "pageSize": 25,
+      "totalCount": 0,
+      "datas": [],           // 지원자 카드 배열 (이 요청에서는 비어있음)
+      "totalPage": 0,
+      "hasPrev": false,
+      "hasNext": false
+    }
+  }
+  ```
+- **참고**: 이 예시(processId=100002, Document Review 단계)는 지원자가 0명이라 datas가 빈 배열. 지원자가 있는 단계의 응답에서 카드 데이터 구조 확인 필요
 
 ### 3. (조사 필요) 카드 상세 / 평가 정보
 
